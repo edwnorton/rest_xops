@@ -25,7 +25,7 @@ export default {
   methods: {
     to() {
       const _this = this.$refs.form
-      _this.form = { id: this.data.id, name: this.data.name, desc: this.data.desc }
+      _this.form = { id: this.data.id, name: this.data.name, businesses_port: this.data.businesses_port, desc: this.data.desc }
       _this.dialog = true
     }
   }

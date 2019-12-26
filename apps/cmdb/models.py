@@ -103,6 +103,7 @@ class DeviceInfo(AbstractMode, DeviceAbstract, TimeAbstract):
 
 class Business(TimeAbstract):
     name = models.CharField(max_length=50, verbose_name='业务名称')
+    businesses_port = models.CharField(max_length=50, blank=True, null=True, verbose_name='业务端口')
     desc = models.CharField(max_length=255, blank=True, null=True, verbose_name='备注')
 
     class Meta:

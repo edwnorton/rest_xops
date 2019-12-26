@@ -32,4 +32,3 @@ class XopsResponse(Response):
         if headers:
             for name, value in six.iteritems(headers):
                 self[name] = value
-

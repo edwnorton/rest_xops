@@ -1,11 +1,11 @@
-# @Time    : 2019/3/4 15:41
-# @Author  : xufqing
+# @Time    : 2019/12/19 15:41
+# @Author  : tq
 from rest_framework.views import APIView
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_xops.code import *
 from rest_xops.basic import XopsResponse
 from ..models import Project, DeployRecord
-from cmdb.models import DeviceInfo, ConnectionInfo
+from cmdb.models import DeviceInfo, ConnectionInfo, Business
 from utils.shell_excu import Shell, connect_init
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 import os, logging, time
@@ -86,22 +86,24 @@ class DeployView(APIView):
 
     def repo_init(self, id):
         if id:
-            repo = Project.objects.filter(id=int(id)).values('alias', 'repo_url')
-            path = self._path.rstrip('/') + '/' + str(id) + '_' + str(repo[0]['alias'])
-            if not os.path.exists(path): os.makedirs(path)
-            if not os.path.exists(path + '/logs'): os.makedirs(path + '/logs')
+            #获取当前id项的业务ip与端口
+            Dev_info = DeviceInfo.objects.filter(id=int(id)).first()
+            bus_port = Dev_info.businesses.all()[0].businesses_port
+            host_ip = Dev_info.hostname
+            
+            # 扫描业务端口
             localhost = Shell('127.0.0.1')
-            command = 'cd %s && git rev-parse --is-inside-work-tree' % (repo[0]['alias'])
-            with localhost.cd(path):
-                result = localhost.local(command)
+            #command = 'cd %s && git rev-parse --is-inside-work-tree' % (repo[0]['alias'])
+            command = 'nmap -sT -Pn ' + str(host_ip) + ' -p ' + str(bus_port) + '|grep tcp|awk -F " " \'{print $2}\''
+            result = localhost.local(command)
+
             if result.exited != 0:
-                command = 'rm -rf %s' % (path + '/' + str(repo[0]['alias']))
-                localhost.local(command)
-                with localhost.cd(path):
-                    command = 'git clone %s %s' % (repo[0]['repo_url'], repo[0]['alias'])
-                    result = localhost.local(command)
-                    massage = '正在克隆%s到%s ...' % (repo[0]['repo_url'], path)
-                    info_logger.info(massage)
+                info_logger.error("查询业务端口状态信息失败...")
+            elif result.stdout.strip() == 'open':
+                info_logger.info("process is running...{}".format(result.stdout))
+            elif result.stdout.strip() != 'open':
+                info_logger.info("process is NOT running...{}".format(result.stdout))
+                
             localhost.close()
             return result
 
@@ -179,8 +181,13 @@ class DeployView(APIView):
             # 项目初始化
             id = request.data['id']
             result = self.repo_init(id)
-            if result.exited == 0:
+            if result.exited == 0 and result.stdout.strip() == "open":
                 Project.objects.filter(id=id).update(status='Succeed')
+                info_logger.info('初始化项目:' + str(id) + ',执行成功!')
+                http_status = OK
+                msg = '初始化成功!'
+            elif result.exited == 0 and result.stdout.strip() != "open":
+                Project.objects.filter(id=id).update(status='Stop')
                 info_logger.info('初始化项目:' + str(id) + ',执行成功!')
                 http_status = OK
                 msg = '初始化成功!'

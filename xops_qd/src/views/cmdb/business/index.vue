@@ -11,6 +11,7 @@
             </template>
           </el-table-column>
           <el-table-column prop="name" label="名称"/>
+          <el-table-column prop="businesses_port" label="业务端口"/>
           <el-table-column v-if="table_show" prop="desc" label="描述"/>
           <el-table-column label="操作" align="center">
             <template slot-scope="scope">

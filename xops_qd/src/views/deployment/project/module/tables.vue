@@ -10,7 +10,8 @@
       </el-table-column>
       <el-table-column label="初始化状态" width="150">
         <template slot-scope="scope">
-          <span v-if="scope.row.status == 'Succeed'" style="color:#00CC00">成功</span>
+          <span v-if="scope.row.status == 'Succeed'" style="color:#00CC00">运行中</span>
+          <span v-else-if="scope.row.status == 'Stop'" style="color:#ED7D31">已停止</span>
           <span v-else style="color:red">失败</span>
         </template>
       </el-table-column>

@@ -4,6 +4,9 @@
       <el-form-item label="名称" prop="name">
         <el-input v-model="form.name" style="width: 330px;"/>
       </el-form-item>
+      <el-form-item label="业务端口">
+        <el-input v-model="form.businesses_port" style="width: 330px;"/>
+      </el-form-item>
       <el-form-item label="描述">
         <el-input v-model="form.desc" style="width: 330px;" rows="5" type="textarea"/>
       </el-form-item>
@@ -31,7 +34,7 @@ export default {
   data() {
     return {
       loading: false, dialog: false,
-      form: { name: '', desc: '' },
+      form: { name: '', businesses_port: '', desc: '' },
       rules: {
         name: [
           { required: true, message: '请输入名称', trigger: 'blur' }
@@ -90,7 +93,7 @@ export default {
     resetForm() {
       this.dialog = false
       this.$refs['form'].resetFields()
-      this.form = { name: '', desc: '' }
+      this.form = { name: '', businesses_port: '', desc: '' }
     }
   }
 }
