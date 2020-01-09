@@ -1,5 +1,3 @@
-# @Time    : 2019/4/1 13:50
-# @Author  : xufqing
 from rest_framework.views import APIView
 from rest_xops.basic import XopsResponse
 from rest_xops.code import *

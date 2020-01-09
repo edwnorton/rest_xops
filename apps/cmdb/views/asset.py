@@ -13,7 +13,9 @@ from deployment.models import Project
 from rest_xops.basic import XopsResponse
 from rest_xops.code import *
 from django.db.models import Q
+import logging
 
+info_logger = logging.getLogger('info')
 
 class DeviceInfoViewSet(ModelViewSet):
     '''

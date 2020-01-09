@@ -1,5 +1,3 @@
-# @Time    : 2019/3/21 16:16
-# @Author  : xufqing
 import paramiko, logging, time
 from paramiko_expect import SSHClientInteraction
 from channels.layers import get_channel_layer
@@ -12,7 +10,9 @@ class Tailf(object):
     @classmethod
     def send_message(self, user, message):
         channel_layer = get_channel_layer()
+        info_logger.info('--------111111111-----------')
         async_to_sync(channel_layer.group_send)(user, {"type": "user.message", 'message': message})
+        info_logger.info('--------222222222-----------')
 
     def get_is_stop(self, webuser):
         redis = RedisObj()

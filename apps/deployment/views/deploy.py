@@ -95,7 +95,10 @@ class DeployView(APIView):
             localhost = Shell('127.0.0.1')
             #command = 'cd %s && git rev-parse --is-inside-work-tree' % (repo[0]['alias'])
             command = 'nmap -sT -Pn ' + str(host_ip) + ' -p ' + str(bus_port) + '|grep tcp|awk -F " " \'{print $2}\''
+            #command = 'ip a|grep eth0|grep inet'
             result = localhost.local(command)
+            #result = localhost.run(command)
+            #info_logger.error("执行命令结果result...{}".format(result))
 
             if result.exited != 0:
                 info_logger.error("查询业务端口状态信息失败...")

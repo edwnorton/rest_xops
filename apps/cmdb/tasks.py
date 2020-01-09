@@ -49,6 +49,7 @@ def scan_execution():
             kwargs['error_message'] = []
             for key, value in commands.items():
                 result = connect.run(value)
+                info_logger.info(result)
                 if hasattr(result, 'stdout'):
                     if result.failed:
                         kwargs['status'] = 'Failed'
